@@ -54,7 +54,7 @@ steps:
     env:
       - "GOPATH=/gopath"
       - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
+      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1"
       - "GONOSUMDB=*"
     volumes:
       - name: "go"
@@ -69,9 +69,9 @@ steps:
     env:
       - "GOPATH=/gopath"
       - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
+      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1"
       - "GONOSUMDB=*"
-    volumes:
+    volumes:1
       - name: "go"
         path: "/gopath"
     script: |
@@ -119,7 +119,7 @@ steps:
 
   - id: "install-zig"
     name: "us-docker.pkg.dev/${_AIRLOCK_AR_PROJECT}/docker-3p-trusted/golang@sha256:0ecdc2a9f6156af6451080bfe3d8382a662fcc4e209608c6f919e643453514c1"
-    waitFor: ["-"]
+    waitFor: ["setup-airlock-auth"]
     volumes:
       - name: "zig"
         path: "/zig-tools"
@@ -132,7 +132,7 @@ steps:
 
   - id: "install-macos-sdk"
     name: "gcr.io/cloud-builders/gcloud:latest"
-    waitFor: ["-"]
+    waitFor: ["setup-airlock-auth"]
     volumes:
       - name: "macos-sdk"
         path: "/macos-sdk"
@@ -159,9 +159,6 @@ steps:
       - "GOARCH=amd64"
       - "CC=/zig-tools/zig cc -target x86_64-linux-gnu"
       - "CXX=/zig-tools/zig c++ -target x86_64-linux-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -192,9 +189,6 @@ steps:
       - "GOARCH=amd64"
       - "CC=/zig-tools/zig cc -target x86_64-linux-gnu"
       - "CXX=/zig-tools/zig c++ -target x86_64-linux-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -230,9 +224,6 @@ steps:
       - "COMMON_FLAGS=-mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CC=/zig-tools/zig cc -mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CXX=/zig-tools/zig c++ -mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -270,9 +261,6 @@ steps:
       - "COMMON_FLAGS=-mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CC=/zig-tools/zig cc -mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CXX=/zig-tools/zig c++ -mmacosx-version-min=10.14 -target aarch64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -310,9 +298,6 @@ steps:
       - "COMMON_FLAGS=-mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CC=/zig-tools/zig cc -mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CXX=/zig-tools/zig c++ -mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -350,9 +335,6 @@ steps:
       - "COMMON_FLAGS=-mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CC=/zig-tools/zig cc -mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
       - "CXX=/zig-tools/zig c++ -mmacosx-version-min=10.14 -target x86_64-macos.11.0.0-none -isysroot /macos-sdk/MacOSX14.5.sdk -iwithsysroot /usr/include -iframeworkwithsysroot /System/Library/Frameworks"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -385,9 +367,6 @@ steps:
       - "GOARCH=amd64"
       - "CC=/zig-tools/zig cc -target x86_64-windows-gnu"
       - "CXX=/zig-tools/zig c++ -target x86_64-windows-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -418,9 +397,6 @@ steps:
       - "GOARCH=amd64"
       - "CC=/zig-tools/zig cc -target x86_64-windows-gnu"
       - "CXX=/zig-tools/zig c++ -target x86_64-windows-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -451,9 +427,6 @@ steps:
       - "GOARCH=arm64"
       - "CC=/zig-tools/zig cc -target aarch64-windows-gnu"
       - "CXX=/zig-tools/zig c++ -target aarch64-windows-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -484,9 +457,6 @@ steps:
       - "GOARCH=arm64"
       - "CC=/zig-tools/zig cc -target aarch64-windows-gnu"
       - "CXX=/zig-tools/zig c++ -target aarch64-windows-gnu"
-      - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted"
-      - "GONOSUMDB=*"
     volumes:
       - name: "go"
         path: "/gopath"
@@ -534,7 +504,7 @@ steps:
       bash .ci/trigger_exit_gate.sh npm
 
   - id: "publish-pypi-to-ar"
-    name: "us-docker.pkg.dev/${_AIRLOCK_AR_PROJECT}/docker-3p-trusted/python:3.12"
+    name: "us-docker.pkg.dev/${_AIRLOCK_AR_PROJECT}/docker-3p-trusted/python:3.12-slim@sha256:2f17fc044b579bab302c2e8054d3a686e2cb9a83de48e70534b94cd8ebbe06a9"
     waitFor:
       - "setup-airlock-auth"
       - "build-linux-amd64"
@@ -581,7 +551,7 @@ options:
 
 substitutions:
   _REGION: us-central1
-  _AIRLOCK_AR_PROJECT: artifact-registry-prod
+  _AIRLOCK_AR_PROJECT: artifact-foundry-prod
   _AR_HOSTNAME: ${_REGION}-docker.pkg.dev
   _AR_REPO_NAME: toolbox
   _BUCKET_NAME: mcp-toolbox-for-databases
