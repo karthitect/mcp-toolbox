@@ -11,12 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM --platform=$BUILDPLATFORM golang:1 AS build
+FROM --platform=$BUILDPLATFORM us-docker.pkg.dev/artifact-foundry-prod/docker-3p-trusted/golang@sha256:0ecdc2a9f6156af6451080bfe3d8382a662fcc4e209608c6f919e643453514c1 AS build
 
 # Install Zig for CGO cross-compilation
 RUN --mount=type=secret,id=airlock_token \
     export TOKEN=$(cat /run/secrets/airlock_token) && \
-    source /etc/os-release && \
+    . /etc/os-release && \
     if [ "$ID" = "ubuntu" ]; then REPO="ubuntu-${VERSION_CODENAME}-3p-trusted"; else REPO="standard-debian-${VERSION_CODENAME}-3p-l1"; fi && \
     echo "machine us-apt.pkg.dev login oauth2accesstoken password ${TOKEN}" > /etc/apt/auth.conf && \
     rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list && \
@@ -35,6 +35,10 @@ ARG TARGETARCH
 ARG BUILD_TYPE="container.dev"
 ARG COMMIT_SHA=""
 
+ARG GOPROXY
+ENV GOPROXY=${GOPROXY}
+ARG GONOSUMDB
+ENV GONOSUMDB=${GONOSUMDB}
 RUN go get ./...
 
 RUN export ZIG_TARGET="" && \
