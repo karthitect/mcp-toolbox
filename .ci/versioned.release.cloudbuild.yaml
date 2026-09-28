@@ -31,6 +31,22 @@ steps:
       //us-npm.pkg.dev/${_AIRLOCK_AR_PROJECT}/npm-3p-trusted/:_authToken=${TOKEN}
       EOL
 
+      # Create a reusable apt setup script
+      cat > /workspace/setup_apt.sh <<EOF
+      #!/usr/bin/env bash
+      source /etc/os-release
+      if [[ "\$ID" == "ubuntu" ]]; then
+        REPO="ubuntu-\${VERSION_CODENAME}-3p-trusted"
+      else
+        REPO="standard-debian-\${VERSION_CODENAME}-3p-l1"
+      fi
+      echo "machine us-apt.pkg.dev login oauth2accesstoken password ${TOKEN}" > /etc/apt/auth.conf
+      rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list
+      echo "deb [trusted=yes] https://us-apt.pkg.dev/projects/${_AIRLOCK_AR_PROJECT} \${REPO} main" > /etc/apt/sources.list
+      EOF
+      chmod +x /workspace/setup_apt.sh
+      echo "${TOKEN}" > /workspace/.airlock_token
+
   - id: "install-dependencies"
     name: "us-docker.pkg.dev/${_AIRLOCK_AR_PROJECT}/docker-3p-trusted/golang@sha256:0ecdc2a9f6156af6451080bfe3d8382a662fcc4e209608c6f919e643453514c1"
     waitFor: 
@@ -93,6 +109,7 @@ steps:
         --platform linux/amd64,linux/arm64 \
         --build-arg BUILD_TYPE=container.release \
         --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
+        --secret id=airlock_token,src=/workspace/.airlock_token \
         $TAGS \
         --push .
 
@@ -109,7 +126,7 @@ steps:
     script: |
       #!/usr/bin/env bash
       set -e
-      apt-get update && apt-get install -y xz-utils
+      bash /workspace/setup_apt.sh && apt-get update && apt-get install -y xz-utils
       curl -fL "https://ziglang.org/download/0.15.2/zig-x86_64-linux-0.15.2.tar.xz" -o zig.tar.xz
       tar -xf zig.tar.xz -C /zig-tools --strip-components=1
 
@@ -122,7 +139,7 @@ steps:
     script: |
       #!/usr/bin/env bash
       set -e
-      apt-get update && apt-get install -y xz-utils
+      bash /workspace/setup_apt.sh && apt-get update && apt-get install -y xz-utils
       echo "Downloading macOS 14.5 SDK..."
       gcloud storage cp gs://${_ASSETS_BUCKET}/MacOSX14.5.tar.xz sdk.tar.xz
 

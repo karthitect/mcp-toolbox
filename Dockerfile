@@ -14,7 +14,14 @@
 FROM --platform=$BUILDPLATFORM golang:1 AS build
 
 # Install Zig for CGO cross-compilation
-RUN apt-get update && apt-get install -y xz-utils
+RUN --mount=type=secret,id=airlock_token \
+    export TOKEN=$(cat /run/secrets/airlock_token) && \
+    source /etc/os-release && \
+    if [ "$ID" = "ubuntu" ]; then REPO="ubuntu-${VERSION_CODENAME}-3p-trusted"; else REPO="standard-debian-${VERSION_CODENAME}-3p-l1"; fi && \
+    echo "machine us-apt.pkg.dev login oauth2accesstoken password ${TOKEN}" > /etc/apt/auth.conf && \
+    rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list && \
+    echo "deb [trusted=yes] https://us-apt.pkg.dev/projects/artifact-foundry-prod ${REPO} main" > /etc/apt/sources.list && \
+    apt-get update && apt-get install -y xz-utils
 RUN curl -fL "https://ziglang.org/download/0.15.2/zig-x86_64-linux-0.15.2.tar.xz" -o zig.tar.xz && \
     mkdir -p /zig && \
     tar -xf zig.tar.xz -C /zig --strip-components=1 && \
