@@ -71,7 +71,7 @@ steps:
       - "HOME=/workspace"
       - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1"
       - "GONOSUMDB=*"
-    volumes:1
+    volumes:
       - name: "go"
         path: "/gopath"
     script: |
