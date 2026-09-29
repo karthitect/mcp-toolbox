@@ -54,7 +54,7 @@ steps:
     env:
       - "GOPATH=/gopath"
       - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1"
+      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/ah-3p-staging-golang"
       - "GONOSUMDB=*"
     volumes:
       - name: "go"
@@ -69,7 +69,7 @@ steps:
     env:
       - "GOPATH=/gopath"
       - "HOME=/workspace"
-      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1"
+      - "GOPROXY=https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-trusted,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/golang-3p-l1,https://us-go.pkg.dev/${_AIRLOCK_AR_PROJECT}/ah-3p-staging-golang"
       - "GONOSUMDB=*"
     volumes:
       - name: "go"
